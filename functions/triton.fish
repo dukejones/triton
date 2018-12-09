@@ -13,6 +13,7 @@ function triton
             echo "triton list"
             echo "triton update"
             echo "triton fishfile <path/to/fishfile>"
+            echo "triton bootstrap"
         case "init"
             __triton_load_fishfile $TRITON_PATH/../fishfile
         case "list"
@@ -94,9 +95,11 @@ function __triton_list
 end
 
 function __triton_bootstrap_template
+    echo "Bootstrapping fish config files..."
     set FISH_PATH (realpath "$TRITON_PATH/..")
     for file in {config.fish,fishfile,conf.d/aliases.fish}
         if not test -f $FISH_PATH/$file
+            echo "$FISH_PATH/$file"
             mkdir -p (dirname "$FISH_PATH/$file")
             cp $TRITON_PATH/github.com/dukejones/triton/template/$file $FISH_PATH/$file
         else
