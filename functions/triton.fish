@@ -5,6 +5,8 @@ function triton
     and set -gx TRITON_PATH "$XDG_CONFIG_HOME/fish/triton"
     or set -gx TRITON_PATH "$HOME/.config/fish/triton"
 
+    test -d $TRITON_PATH; or mkdir -p $TRITON_PATH
+
     switch "$argv[1]"
         case ""
             # TODO: all this as completions
@@ -38,10 +40,9 @@ function __triton_main -a library
     # TODO: if it includes a domain, use it. [non-github are people too]
 
     if test ! -d "$lib_path"
-        echo $lib_path
-        echo "Library '$library' is not installed.  Attempting to install."
-        set -l cmd "git clone https://github.com/$library $TRITON_PATH/github.com/$library"
-        echo "> $cmd"
+        echo (set_color yellow)"Library '$library' is not installed.  Installing..."
+        set -l cmd "git clone -q https://github.com/$library $TRITON_PATH/github.com/$library"
+        echo (set_color blue)"> $cmd"
         eval $cmd
         test -f $lib_path/hooks/install.fish ; and source $lib_path/hooks/install.fish
     end
@@ -67,25 +68,27 @@ function __triton_main -a library
         and source $lib_path/conf.d/*.fish
 
     if test (count $lib_path/*.fish) -gt 0
-        source $lib_path/*.fish
+        # source $lib_path/*.fish
+        # TODO: Do this only when it's a theme.
         set fish_function_path $fish_function_path[1] \
                             $lib_path \
                             $fish_function_path[2..-1]
     end
-    # test -f $lib_path/init.fish; and source $lib_path/init.fish
+    test -f $lib_path/init.fish; and source $lib_path/init.fish
 
     set -g __triton_libs $__triton_libs $library
 end
 
 
 function __triton_load_fishfile -a fishfile
+    test -f $fishfile ; or return
     for lib in (cat $fishfile)
         triton $lib
     end
 end
 
 function __triton_update
-    echo Updating everything...
+    echo Updating everything... not yet implemented.
 end
 
 function __triton_list
@@ -96,14 +99,17 @@ end
 
 function __triton_bootstrap_template
     echo "Bootstrapping fish config files..."
+    triton dukejones/triton
     set FISH_PATH (realpath "$TRITON_PATH/..")
     for file in {config.fish,fishfile,conf.d/aliases.fish}
         if not test -f $FISH_PATH/$file
-            echo "$FISH_PATH/$file"
+            echo (set_color green)"[adding]"(set_color normal) "$FISH_PATH/$file"
             mkdir -p (dirname "$FISH_PATH/$file")
             cp $TRITON_PATH/github.com/dukejones/triton/template/$file $FISH_PATH/$file
         else
-            echo "$FISH_PATH/$file exists."
+            echo (set_color yellow)"[exists]"(set_color normal) "$FISH_PATH/$file"
         end
     end
+    echo (set_color green)Complete.(set_color normal)
+    source $FISH_PATH/config.fish
 end
