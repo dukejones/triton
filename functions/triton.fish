@@ -68,8 +68,7 @@ function __triton_main -a library
         and source $lib_path/conf.d/*.fish
 
     if test (count $lib_path/*.fish) -gt 0
-        # source $lib_path/*.fish
-        # TODO: Do this only when it's a theme.
+        source $lib_path/*.fish
         set fish_function_path $fish_function_path[1] \
                             $lib_path \
                             $fish_function_path[2..-1]

@@ -6,6 +6,7 @@ Installation Script:
 Manual Installation:
 
 `curl -L "https://git.io/triton!" > ~/.config/fish/functions/
+
 `triton bootstrap`
 
 ## Usage ##
