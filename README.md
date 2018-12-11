@@ -1,7 +1,7 @@
 # Install #
 Installation Script:
 
-`curl -L https://git.io/fpQtL | fish`
+`curl -L https://git.io/fp7xA | fish`
 
 Manual Installation:
 
