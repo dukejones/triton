@@ -1,5 +1,4 @@
 
-# TODO: Don't load the same library multiple times.
 function triton
     set -q XDG_CONFIG_HOME
     and set -gx TRITON_PATH "$XDG_CONFIG_HOME/fish/triton"
@@ -33,9 +32,10 @@ function triton
 end
 
 function __triton_main -a library
-    # TODO: if no username assume oh-my-fish
+    contains $library $__triton_libs
+        and return
     
-    set lib_path $TRITON_PATH/github.com/$library
+    set lib_path (realpath $TRITON_PATH/github.com/$library)
     
     # TODO: if it includes a domain, use it. [non-github are people too]
 
@@ -54,11 +54,13 @@ function __triton_main -a library
     test -f $lib_path/before.init.fish; and source $lib_path/before.init.fish
 
     test -d "$lib_path/functions"
+        and not contains "$lib_path/functions" $fish_function_path
         and set fish_function_path $fish_function_path[1] \
                                 $lib_path/functions \
                                 $fish_function_path[2..-1]
 
     test -d "$lib_path/completions"
+        and not contains "$lib_path/completions" $fish_complete_path
         and set fish_complete_path $fish_complete_path[1] \
                                $lib_path/completions \
                                $fish_complete_path[2..-1]
@@ -69,15 +71,17 @@ function __triton_main -a library
 
     if test (count $lib_path/*.fish) -gt 0
         source $lib_path/*.fish
-        set fish_function_path $fish_function_path[1] \
-                            $lib_path \
-                            $fish_function_path[2..-1]
+
+        contains $lib_path $fish_function_path
+            or set fish_function_path $fish_function_path[1] \
+                                    $lib_path \
+                                    $fish_function_path[2..-1]
     end
-    test -f $lib_path/init.fish; and source $lib_path/init.fish
+    # test -f $lib_path/init.fish; and source $lib_path/init.fish
 
-    set -g __triton_libs $__triton_libs $library
+    contains $library $__triton_libs
+        or set -g __triton_libs $__triton_libs $library
 end
-
 
 function __triton_load_fishfile -a fishfile
     test -f $fishfile ; or return
@@ -91,6 +95,11 @@ function __triton_update
 end
 
 function __triton_list
+    echo (set_color yellow)💾 Installed Fish Plugins(set_color green)
+    for l in $__triton_libs
+        echo $l
+    end
+    echo (set_color yellow)🛒 A few places to look for more(set_color blue)
     echo https://github.com/topics/fish-plugin
     echo https://github.com/topics/fish-plugins
     echo https://github.com/oh-my-fish/oh-my-fish/blob/master/docs/Themes.md
