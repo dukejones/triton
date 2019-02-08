@@ -1,5 +1,5 @@
 ### INIT ###
-triton init
+triton
 # source (pyenv init - | psub)
 
 ### THEMES ###

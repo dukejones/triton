@@ -1,13 +1,20 @@
 
 function triton
+    [ -z "$TRITON_PATH" ]; and set -l do_init true
+
     set -q XDG_CONFIG_HOME
     and set -gx TRITON_PATH "$XDG_CONFIG_HOME/fish/triton"
     or set -gx TRITON_PATH "$HOME/.config/fish/triton"
 
     test -d $TRITON_PATH; or mkdir -p $TRITON_PATH
 
+    if [ -n "$do_init" -a "$argv[1]" != "init" ]
+        triton init
+    end
+
     switch "$argv[1]"
         case ""
+            [ -n "$do_init" ]; and return # if first initialization, don't show usage.
             # TODO: all this as completions
             echo "Usage: find some libraries.  Load 'em up"
             echo "triton init"
@@ -28,48 +35,52 @@ function triton
         case "*"
             __triton_main $argv
     end
-
 end
 
 function __triton_main -a library
     contains $library $__triton_libs
         and return
     
-    set lib_path (realpath $TRITON_PATH/github.com/$library)
-    
+    set lib_path (realpath $TRITON_PATH/github.com/$library 2> /dev/null )
     # TODO: if it includes a domain, use it. [non-github are people too]
 
-    if test ! -d "$lib_path"
-        echo (set_color yellow)"Library '$library' is not installed.  Installing..."
-        set -l cmd "git clone -q https://github.com/$library $TRITON_PATH/github.com/$library"
-        echo (set_color blue)"> $cmd"
-        eval $cmd
-        test -f $lib_path/hooks/install.fish ; and source $lib_path/hooks/install.fish
+    if [ ! -d "$lib_path" ]
+        __triton_run_cmd \
+            "git clone -q https://github.com/$library $TRITON_PATH/github.com/$library" \
+            "Triton: Installing '$library'."
+        if [ -f "$lib_path/.gitmodules" ]
+            set -l prev_dir $PWD
+            cd $lib_path
+            git rev-parse --show-toplevel
+            __triton_run_cmd \
+                "git submodule update --init" \
+                "Installing git submodules."
+            await
+            cd $prev_dir # This shows an error. :(
+        end
+        # test -f $lib_path/hooks/install.fish ; and source $lib_path/hooks/install.fish
     end
 
-    if test -f $lib_path/fishfile
+    if [ -f "$lib_path/fishfile" ]
         __triton_load_fishfile $lib_path/fishfile
     end
-
-    test -f $lib_path/before.init.fish; and source $lib_path/before.init.fish
-
-    test -d "$lib_path/functions"
+    [ -f "$lib_path/before.init.fish" ]; and source $lib_path/before.init.fish
+    [ -d "$lib_path/functions" ]
         and not contains "$lib_path/functions" $fish_function_path
         and set fish_function_path $fish_function_path[1] \
                                 $lib_path/functions \
                                 $fish_function_path[2..-1]
-
-    test -d "$lib_path/completions"
+    [ -d "$lib_path/completions" ]
         and not contains "$lib_path/completions" $fish_complete_path
         and set fish_complete_path $fish_complete_path[1] \
                                $lib_path/completions \
                                $fish_complete_path[2..-1]
-
-
-    test (count $lib_path/conf.d/*.fish) -gt 0
-        and source $lib_path/conf.d/*.fish
-
-    if test (count $lib_path/*.fish) -gt 0
+    if [ (count $lib_path/conf.d/*.fish) -gt 0 ]
+        for file in $lib_path/conf.d/*.fish
+            source $file
+        end
+    end
+    if [ (count $lib_path/*.fish) -gt 0 ]
         source $lib_path/*.fish
 
         contains $lib_path $fish_function_path
@@ -77,15 +88,14 @@ function __triton_main -a library
                                     $lib_path \
                                     $fish_function_path[2..-1]
     end
-    # test -f $lib_path/init.fish; and source $lib_path/init.fish
-
     contains $library $__triton_libs
         or set -g __triton_libs $__triton_libs $library
 end
 
 function __triton_load_fishfile -a fishfile
-    test -f $fishfile ; or return
+    [ -f "$fishfile" ] ; or return
     for lib in (cat $fishfile)
+        echo $lib
         triton $lib
     end
 end
@@ -103,6 +113,12 @@ function __triton_list
     echo https://github.com/topics/fish-plugin
     echo https://github.com/topics/fish-plugins
     echo https://github.com/oh-my-fish/oh-my-fish/blob/master/docs/Themes.md
+end
+
+function __triton_run_cmd -a cmd msg -d "Display the message & run the cmd, displaying it in nice colors."
+    [ -n "$msg" ]; and echo (set_color yellow)$msg
+    echo (set_color blue)"> $cmd"
+    eval $cmd
 end
 
 function __triton_bootstrap_template
