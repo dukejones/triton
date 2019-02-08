@@ -95,7 +95,6 @@ end
 function __triton_load_fishfile -a fishfile
     [ -f "$fishfile" ] ; or return
     for lib in (cat $fishfile)
-        echo $lib
         triton $lib
     end
 end

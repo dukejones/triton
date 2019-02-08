@@ -3,12 +3,6 @@ Installation Script:
 
 `curl -L https://git.io/fp7xA | fish`
 
-Manual Installation:
-
-`curl -L "https://git.io/triton!" > ~/.config/fish/functions/
-
-`triton bootstrap`
-
 ## Usage ##
 `triton init` : Initialize by loading/installing all of the libraries listed in your fishfile.
 
