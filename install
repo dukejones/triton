@@ -1,14 +1,22 @@
 #!/usr/bin/env fish
 
+if [ ! (which git) ]
+    echo "`git` is required for installation.  Please try again after installing an accessible git binary."
+    exit 1
+end
+
 set -q XDG_CONFIG_HOME
     and set FISH_PATH "$XDG_CONFIG_HOME/fish"
     or set FISH_PATH "$HOME/.config/fish"
 
-git clone https://github.com/dukejones/triton.git $FISH_PATH/triton/github.com/dukejones/triton
-mkdir -p $FISH_PATH/functions
-ln -s $FISH_PATH/triton/github.com/dukejones/triton/functions/triton.fish $FISH_PATH/functions/
+[ -d "$FISH_PATH/triton/github.com/dukejones/triton" ]
+    or git clone https://github.com/dukejones/triton.git "$FISH_PATH/triton/github.com/dukejones/triton"
 
-echo "Welcome to Triton!  To bootstrap a new level of fish configuration bliss you may wish to run:"
+mkdir -p "$FISH_PATH/functions"
+[ -f "$FISH_PATH/functions/triton.fish" ]
+    or ln -s "$FISH_PATH/triton/github.com/dukejones/triton/functions/triton.fish" "$FISH_PATH/functions/"
+
+echo "Welcome to Triton!  To bootstrap a nice set of default fish configuration files you may wish to run:"
 echo
 echo "triton bootstrap"
 
