@@ -47,7 +47,7 @@ function __triton_main -a library
     if [ ! -d "$lib_path" ]
         __triton_run_cmd \
             "git clone -q https://github.com/$library $TRITON_PATH/github.com/$library" \
-            "Triton: Installing '$library'."
+            "Triton: Installing '$library'. 💾"
         if [ -f "$lib_path/.gitmodules" ]
             set -l prev_dir $PWD
             cd $lib_path
@@ -99,19 +99,19 @@ function __triton_load_fishfile -a fishfile
     end
 end
 
-function __triton_update
-    echo Updating everything... not yet implemented.
-end
+# function __triton_update
+#     echo Updating everything... not yet implemented.
+# end
 
 function __triton_list
-    echo (set_color yellow)💾 Installed Fish Plugins(set_color green)
+    echo (set_color yellow)Installed Fish Plugins(set_color green) 💾
     for l in $__triton_libs
-        echo $l
+        echo "    $l"
     end
-    echo (set_color yellow)🛒 A few places to look for more(set_color blue)
-    echo https://github.com/topics/fish-plugin
-    echo https://github.com/topics/fish-plugins
-    echo https://github.com/oh-my-fish/oh-my-fish/blob/master/docs/Themes.md
+    echo (set_color yellow)A few places to look for more(set_color blue) 🛒
+    echo "    https://github.com/topics/fish-plugin"
+    echo "    https://github.com/topics/fish-plugins"
+    echo "    https://github.com/oh-my-fish/oh-my-fish/blob/master/docs/Themes.md"
 end
 
 function __triton_run_cmd -a cmd msg -d "Display the message & run the cmd, displaying it in nice colors."
@@ -122,7 +122,7 @@ end
 
 function __triton_bootstrap_template
     echo "Bootstrapping fish config files..."
-    triton dukejones/triton
+    triton dukejones/triton # so meta
     set FISH_PATH (realpath "$TRITON_PATH/..")
     for file in {config.fish,fishfile,conf.d/aliases.fish}
         if not test -f $FISH_PATH/$file
