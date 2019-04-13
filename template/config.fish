@@ -12,6 +12,7 @@ set -g theme_powerline_fonts no
 
 ### LIBRARIES ###
 triton joehillen/to-fish # Fish shell directory bookmarks
+triton oh-my-fish/plugin-await # `await` command to sync background tasks with a nice animation.
 
 # Completion / FZF #
 # triton jethrokuan/fzf

@@ -19,4 +19,5 @@ mkdir -p "$FISH_PATH/functions"
 echo "Welcome to Triton!  To bootstrap a nice set of default fish configuration files you may wish to run:"
 echo
 echo "triton bootstrap"
-
+echo
+echo "Do reload fish shell to make sure everything loads up properly. Bon chance! 👑"

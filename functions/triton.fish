@@ -55,8 +55,7 @@ function __triton_main -a library
             __triton_run_cmd \
                 "git submodule update --init" \
                 "Installing git submodules."
-            await
-            cd $prev_dir # This shows an error. :(
+            cd $prev_dir
         end
         # test -f $lib_path/hooks/install.fish ; and source $lib_path/hooks/install.fish
     end
