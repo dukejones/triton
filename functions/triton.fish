@@ -98,9 +98,31 @@ function __triton_load_fishfile -a fishfile
     end
 end
 
-# function __triton_update
-#     echo Updating everything... not yet implemented.
-# end
+function __triton_update
+    set -l triton_lib_path $TRITON_PATH/github.com/dukejones/triton
+    echo (set_color green)"Updating triton lib in path $triton_lib_path"(set_color normal)
+    pushd .
+    cd $triton_lib_path
+    
+    git fetch
+    if git status | grep "is up to date" > /dev/null
+        echo (set_color green)Your Triton install is already up to date!(set_color normal)
+        return
+    end
+
+    
+    if not git status | grep "working tree clean" > /dev/null
+        echo (set_color yellow)"Stashing changes, merging latest, and applying stashed changes."(set_color normal)
+        git stash
+        git merge origin/master
+        git stash apply
+    else
+        echo (set_color yellow)"Merging the latest code."(set_color normal)
+        git merge origin/master
+    end
+    popd
+    echo (set_color green)Done!(set_color normal)
+end
 
 function __triton_list
     echo (set_color yellow)Installed Fish Plugins(set_color green) 💾
@@ -111,6 +133,7 @@ function __triton_list
     echo "    https://github.com/topics/fish-plugin"
     echo "    https://github.com/topics/fish-plugins"
     echo "    https://github.com/oh-my-fish/oh-my-fish/blob/master/docs/Themes.md"
+    set_color normal
 end
 
 function __triton_run_cmd -a cmd msg -d "Display the message & run the cmd, displaying it in nice colors."
