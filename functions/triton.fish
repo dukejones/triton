@@ -143,7 +143,7 @@ function __triton_run_cmd -a cmd msg -d "Display the message & run the cmd, disp
 end
 
 function __triton_bootstrap_template
-    echo "Bootstrapping fish config files..."
+    echo (set_color -r -o green)"Bootstrapping fish config files."(set_color normal)
     triton dukejones/triton # so meta
     set FISH_PATH (realpath "$TRITON_PATH/..")
     for file in {config.fish,fishfile,conf.d/aliases.fish}
@@ -155,6 +155,7 @@ function __triton_bootstrap_template
             echo (set_color yellow)"[exists]"(set_color normal) "$FISH_PATH/$file"
         end
     end
-    echo (set_color green)Complete.(set_color normal)
-    source $FISH_PATH/config.fish
+    exec fish
+    echo (set_color -o green)Complete!(set_color normal)
+    # source $FISH_PATH/config.fish
 end

@@ -16,8 +16,10 @@ mkdir -p "$FISH_PATH/functions"
 [ -f "$FISH_PATH/functions/triton.fish" ]
     or ln -s "$FISH_PATH/triton/github.com/dukejones/triton/functions/triton.fish" "$FISH_PATH/functions/"
 
+exec fish
+
 echo "Welcome to Triton!  To bootstrap a nice set of default fish configuration files you may wish to run:"
 echo
 echo "triton bootstrap"
 echo
-echo "Do reload fish shell to make sure everything loads up properly. Bon chance! 👑"
+echo "Triton: calling forth packages from the primordial ocean of the internet for ultimate shell happiness. 👑"
