@@ -3,32 +3,29 @@ triton init
 # fish_vi_key_bindings
 
 ### THEMES ###
-triton oh-my-fish/theme-agnoster
+
+triton oh-my-fish/theme-bobthefish
+set -g theme_powerline_fonts no # Go ahead and turn this on when you get a powerline font!
+set -g theme_nerd_fonts no # And nerd fonts for the ultimate in nerdy goodness.
+
+# Powerline Themes #
+# triton oh-my-fish/theme-agnoster
 # triton oh-my-fish/theme-es
-# triton oh-my-fish/theme-bobthefish
 # triton jorgebucaran/fish-sol
 # triton jorgebucaran/fish-sektor
-set -g theme_powerline_fonts no
 
-### LIBRARIES ###
+### PACKAGES ###
 triton joehillen/to-fish # Fish shell directory bookmarks
 
-# Completion / FZF #
-# triton jethrokuan/fzf
-# set -U FZF_FIND_FILE_COMMAND "ag -l --hidden --ignore .git"
-# set -U FZF_DEFAULT_OPTS "--height 40% --layout=reverse --border"
-# set -U FZF_LEGACY_KEYBINDINGS 0
-# set -U FZF_COMPLETE 2
+triton oh-my-fish/plugin-node-binpath
+triton kennethreitz/fish-pipenv
+set -gx VIRTUAL_ENV_DISABLE_PROMPT yes
 
-# Python #
-# triton fisherman/pyenv
-# triton kennethreitz/fish-pipenv
-# set -gx VIRTUAL_ENV_DISABLE_PROMPT yes
 
 ### CUSTOMIZATION ###
 # function fish_greeting
 # 	figlet -w 250 Fortune Favors the Bold
 # end
 
-### ENVVARS ETC ###
-
+### ENVIRONMENT ###
+set -g EDITOR vim
