@@ -1,14 +1,14 @@
 # Install #
 Installation Script:
 
-`curl -L https://git.io/fp7xA | fish`
+`wget -qO- https://git.io/fp7xA | fish`
 
-## TL;DR ##
+## Quickstart ##
 
 ```bash
-curl -L https://git.io/fp7xA | fish
+wget -qO- https://git.io/fp7xA | fish
 triton bootstrap
-vim ~/.config/fish/config.fish # or emacs. or nano.  Edit to your heart's content.
+nano ~/.config/fish/config.fish
 ```
 
 Each package is a single line in config.fish which can be commented or edited.  When you fire up your shell it simply loads whatever you tell it to.
@@ -36,10 +36,12 @@ The end result is a nice list of all of installed packages in config.fish and fi
 
 ## Great Packages ##
 
-I usually put themes in config.fish so I can comment them out at will.
+We suggest putting themes in config.fish to be able to comment them out at will, but reference them later.
+Libraries that are must-haves and always givens can go into `Fishfile`.
 
 ```bash
-### THEMES ###
+# Some suggestions for your config.fish:
+
 # triton oh-my-fish/theme-bobthefish
 triton oh-my-fish/theme-agnoster
 # triton oh-my-fish/theme-es
@@ -60,8 +62,8 @@ set -U FZF_ENABLE_OPEN_PREVIEW 1
 And here is my fishfile:
 ```bash
 edc/bass
+joehillen/to-fish
 jethrokuan/z
-fisherman/pyenv
 ```
 
 ### Other Package Lists ###
@@ -69,9 +71,9 @@ fisherman/pyenv
 
 ## Origin Story ##
 
-One day I was searching for a setting in a Fish plugin that was causing a problem, but when I started looking through my Fish config, I became dissatisfied and discouraged.  I couldn't find where the actual library files lived.  Was it symlinked from fisherman?  Was it in one of oh-my-fish's numerous special directories?  How was it even being loaded?!  What was being loaded?!!  Not in functions, or conf.d.... I had to read through the source code of the package managers to figure out what the heck was going on.  It was almost enough to send me back to Zsh, again.
+One day I was searching for a setting in a Fish plugin that was causing a problem, but when I started looking through my Fish config, I became lost in a dense and impenetrable forest of references.  I couldn't find where the actual library files lived.  Was it symlinked from fisherman?  Was it in one of oh-my-fish's numerous special directories?  How was it even being loaded?!  What was being loaded?!!  Functions, or conf.d.... I had to read through the source code of oh-my-fish to figure out what the heck was going on.  It was almost enough to send me back to Zsh, again.
 
-But then I remembered that Fish has an actual scripting language that makes sense.  So I set about copying the best-in-breed: discoverable, explicit, and just magical enough to surprise and delight.  Thus Triton was born.
+But recall that Fish has an actual scripting language that makes sense.  And so, armed with that and a few design principles I set out to make something discoverable, explicit, and magical enough to surprise and delight.  Please enjoy and drop me a line if you like it or have feedback.
 
 Inspirations include: antigen.zsh, Vim+Pathogen.
 
